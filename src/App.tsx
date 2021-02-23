@@ -10,18 +10,22 @@ import YandexMap from "./components/YandexMap";
 import { Coords } from "./interfaces";
 
 const App: React.FC = () => {
-  const [coords, setCoords] = useState<Coords>({ lat: 56.8498, long: 53.2045 });
+  const [address, setAddress] = useState<string>("");
+
+  const getNewAddress = (address: string) => {
+    setAddress(address);
+  };
 
   return (
     <div className="wrapper">
       <Card>
         <Card.Header as="h4">Детали заказа</Card.Header>
         <Card.Body>
-          <OrderForm />
+          <OrderForm getNewAddress={getNewAddress} />
           <Row>
             <Col>Подходящий экипаж:</Col>
           </Row>
-          <YandexMap coords={coords} />
+          <YandexMap address={address} />
         </Card.Body>
       </Card>
     </div>

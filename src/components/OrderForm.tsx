@@ -3,22 +3,21 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-interface OrderFormProps {
+type OrderFormProps = {
+  getNewAddress(address: string): void;
+};
 
-}
-
-const OrderForm: React.FC = () => {
-  const [address, setAddress] = useState<string>("");
+const OrderForm: React.FC<OrderFormProps> = ({ getNewAddress }) => {
+  const [addressField, setAddressField] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(event.target.value)
-  }
+    event.preventDefault();
+    setAddressField(event.target.value);
+  };
 
   const handleBlur = () => {
-    if (address.length) {
-
-    }
-  }
+    getNewAddress(addressField);
+  };
 
   return (
     <Form>
