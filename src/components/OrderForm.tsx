@@ -28,7 +28,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ getNewAddress }) => {
         <Col sm={10}>
           <Form.Control
             type="a"
-            placeholder="Пушкинская, 144"
+            placeholder="Улица, номер дома"
             onChange={handleChange}
             onBlur={handleBlur}
           />
