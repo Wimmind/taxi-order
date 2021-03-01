@@ -3,12 +3,20 @@ import { YMaps, Map, Placemark, withYMaps } from "react-yandex-maps";
 
 const apikey = "b1f85c76-415e-4cb6-8170-21e2e3fd619b";
 
-const YandexMap = (props) => {
-  const PositionedMap = memo(({ ymaps }) => {
+type YandexMapProps = {
+  address: string;
+};
+
+type YmapsProps = {
+  ymaps?: any;
+};
+
+const YandexMap: React.FC<YandexMapProps> = ({ address }) => {
+  const PositionedMap: React.FC<YmapsProps> = memo(({ ymaps }) => {
     const [coords, setCoords] = useState([56.8498, 53.2045]);
 
     useEffect(() => {
-      ymaps.geocode(`Ижевск, ${props.address}`).then((result) => {
+      ymaps.geocode(`Ижевск, ${address}`).then((result: any) => {
         if (result.geoObjects.get(0)) {
           const newCoords = result.geoObjects.get(0).geometry.getCoordinates();
           setCoords(newCoords);
@@ -16,24 +24,25 @@ const YandexMap = (props) => {
           console.log("gg");
         }
       });
-    }, [props.address]);
+    }, [address]);
 
-    const getCoordsOnclick = (e) => {
-      const currentCoords = e.get("coords");
+    const getCoordsOnclick = (event: any) => {
+      const currentCoords = event.get("coords");
       setCoords(currentCoords);
-      ymaps.geocode(currentCoords).then((res) => {
+      ymaps.geocode(currentCoords).then((res: any) => {
         const firstGeoObject = res.geoObjects.get(0);
 
         const newAddres = [
           firstGeoObject.getThoroughfare(),
           firstGeoObject.getPremiseNumber(),
         ].join(", ");
+        console.log(newAddres);
       });
     };
 
     return (
       <Map
-        onClick={(e) => getCoordsOnclick(e)}
+        onClick={getCoordsOnclick}
         width="100%"
         height="500px"
         modules={["geocode"]}
@@ -58,7 +67,7 @@ const YandexMap = (props) => {
   });
 
   const ConnectedMap = useMemo(() => {
-    return withYMaps(PositionedMap, true, [["geolocation", "geocode"]]);
+    return withYMaps(PositionedMap, true, ["geolocation", "geocode"]);
   }, [PositionedMap]);
 
   return (

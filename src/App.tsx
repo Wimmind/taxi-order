@@ -25,7 +25,7 @@ const App: React.FC = () => {
           <Row>
             <Col>Подходящий экипаж:</Col>
           </Row>
-          <YandexMap address={address} getNewAddress={getNewAddress} />
+          <YandexMap address={address}/>
         </Card.Body>
       </Card>
     </div>
