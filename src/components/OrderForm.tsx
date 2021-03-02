@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
 
-import { AddressState } from "../reducer";
+import { AddressState } from "../addressReducer";
 import { setNewAddressAction } from "../actions";
 
 const OrderForm: React.FC = () => {
@@ -39,13 +40,18 @@ const OrderForm: React.FC = () => {
     }
   };
 
+  // const handleSubmit = (event: React.MouseEvent) => {
+  //   const form = event.currentTarget;
+
+  // };
+
   return (
     <Form>
-      <Form.Group as={Row} controlId="formHorizontalAddress">
+      <Form.Row>
         <Form.Label column sm={2}>
           Откуда
         </Form.Label>
-        <Col sm={10}>
+        <Col sm={9}>
           <Form.Control
             type="a"
             placeholder="Улица, номер дома"
@@ -53,9 +59,14 @@ const OrderForm: React.FC = () => {
             onChange={handleChange}
             value={addressField}
             onKeyPress={keyPressHandler}
+            required
+            className={"has-error"}
           />
         </Col>
-      </Form.Group>
+        <Col sm={1}>
+          <Button type="submit">Заказать</Button>
+        </Col>
+      </Form.Row>
     </Form>
   );
 };

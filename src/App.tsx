@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
@@ -16,7 +15,8 @@ const App: React.FC = () => {
         <Card.Body>
           <OrderForm />
           <Row>
-            <Col>Подходящий экипаж:</Col>
+            <Col sm={3}>Подходящий экипаж:</Col>
+            <Col sm={4}>Подходящий экипаж:</Col>
           </Row>
           <YandexMap />
         </Card.Body>
