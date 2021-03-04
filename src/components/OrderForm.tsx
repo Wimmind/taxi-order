@@ -2,17 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 
 import { AddressState } from "../addressReducer";
-import { setNewAddressAction } from "../actions";
+import { setNewAddressAction, setInvalidAddressMessage } from "../addressActions";
 
 const OrderForm: React.FC = () => {
   const [addressField, setAddressField] = useState<string>("");
   const address = useSelector<AddressState, AddressState["address"]>(
     (state) => state.address
   );
+  const isValidAddress = useSelector<AddressState,AddressState["isValidAddress"]>((state) => state.isValidAddress);
+  const invalidMessage = useSelector<AddressState,AddressState["invalidMessage"]>((state) => state.invalidMessage);
+
+  const setInvalidMessage = (message: string) => {
+    dispatch(setInvalidAddressMessage(message));
+  };
 
   useEffect(() => {
     setAddressField(address);
@@ -40,10 +45,12 @@ const OrderForm: React.FC = () => {
     }
   };
 
-  // const handleSubmit = (event: React.MouseEvent) => {
-  //   const form = event.currentTarget;
-
-  // };
+  const handleSubmit = (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (!addressField.length) {
+      setInvalidMessage('Поле обязательно для заполнения)))');
+    }
+  };
 
   return (
     <Form>
@@ -59,12 +66,17 @@ const OrderForm: React.FC = () => {
             onChange={handleChange}
             value={addressField}
             onKeyPress={keyPressHandler}
-            required
             className={"has-error"}
+            isInvalid={isValidAddress ? false : true}
           />
+          {!isValidAddress && (
+            <Form.Control.Feedback type="invalid">
+              {invalidMessage}
+            </Form.Control.Feedback>
+          )}
         </Col>
         <Col sm={1}>
-          <Button type="submit">Заказать</Button>
+          <Button onClick={handleSubmit} type="submit">Заказать</Button>
         </Col>
       </Form.Row>
     </Form>
