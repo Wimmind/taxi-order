@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useTypedSelector } from "../hooks/useTypedSelector";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-import { AddressState } from "../addressReducer";
-import { setNewAddressAction, setInvalidAddressMessage } from "../addressActions";
+import { setNewAddress, setInvalidAddressMessage } from "../store/actions/addressActions";
 
 const OrderForm: React.FC = () => {
   const [addressField, setAddressField] = useState<string>("");
-  const address = useSelector<AddressState, AddressState["address"]>(
-    (state) => state.address
-  );
-  const isValidAddress = useSelector<AddressState,AddressState["isValidAddress"]>((state) => state.isValidAddress);
-  const invalidMessage = useSelector<AddressState,AddressState["invalidMessage"]>((state) => state.invalidMessage);
+  const {address, coords, isValidAddress, invalidMessage} = useTypedSelector(state => state.address)   
 
+  const dispatch = useDispatch();
   const setInvalidMessage = (message: string) => {
     dispatch(setInvalidAddressMessage(message));
+  };
+  const setAddress = (address: string) => {
+    dispatch(setNewAddress(address));
   };
 
   useEffect(() => {
     setAddressField(address);
   }, [address]);
-
-  const dispatch = useDispatch();
-
-  const setNewAddress = (address: string) => {
-    dispatch(setNewAddressAction(address));
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = event.target.value;
@@ -35,13 +29,13 @@ const OrderForm: React.FC = () => {
   };
 
   const handleBlur = () => {
-    setNewAddress(addressField);
+    setAddress(addressField);
   };
 
   const keyPressHandler = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      setNewAddress(addressField);
+      setAddress(addressField);
     }
   };
 
@@ -49,6 +43,14 @@ const OrderForm: React.FC = () => {
     event.preventDefault();
     if (!addressField.length) {
       setInvalidMessage('Поле обязательно для заполнения)))');
+    }
+    if (isValidAddress) {
+      // const order = {
+      //   source_time: Date.now(),
+      //   address: address,
+      //   lat: coords[0],
+      //   lon: coords[1],
+      // }
     }
   };
 
@@ -76,7 +78,7 @@ const OrderForm: React.FC = () => {
           )}
         </Col>
         <Col sm={1}>
-          <Button onClick={handleSubmit} type="submit">Заказать</Button>
+          <Button onClick={handleSubmit} type="submit" disabled={isValidAddress ? false : true}>Заказать</Button>
         </Col>
       </Form.Row>
     </Form>

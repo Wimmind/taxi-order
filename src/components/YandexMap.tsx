@@ -1,32 +1,31 @@
 import React, { useState, useEffect, memo, useMemo } from "react";
 import { YMaps, Map, Placemark, withYMaps } from "react-yandex-maps";
-import { useDispatch, useSelector } from "react-redux";
-
-import { AddressState } from "../addressReducer";
-import { setNewAddressAction, toggleValidityAddress, setInvalidAddressMessage } from "../addressActions";
+import { useDispatch } from "react-redux";
+import { useTypedSelector } from "../hooks/useTypedSelector";
+import { setNewAddress, toggleValidityAddress, setInvalidAddressMessage, setNewCoords } from "../store/actions/addressActions";
 
 const apikey = "b1f85c76-415e-4cb6-8170-21e2e3fd619b";
 
-type PositionedMapProps = {
+interface PositionedMapProps {
   ymaps?: any;
 };
 
 const YandexMap: React.FC = () => {
   const PositionedMap: React.FC<PositionedMapProps> = memo(({ ymaps }) => {
-    const [coords, setCoords] = useState([56.8498, 53.2045]);
     const [baseMarkerColor, setBaseMarkerColor] = useState("#e5be01");
-    const address = useSelector<AddressState, AddressState["address"]>(
-      (state) => state.address
-    );
+    const {address, coords} = useTypedSelector(state => state.address)   
     const dispatch = useDispatch();
-    const setNewAddress = (address: string) => {
-      dispatch(setNewAddressAction(address));
+    const setAddress = (address: string) => {
+      dispatch(setNewAddress(address));
     };
     const setAddressFieldState = (value: boolean) => {
       dispatch(toggleValidityAddress(value));
     };
     const setInvalidMessage = (message: string) => {
       dispatch(setInvalidAddressMessage(message));
+    };
+    const setCoords = (coords: number[]) => {
+      dispatch(setNewCoords(coords));
     };
 
     useEffect(() => {
@@ -63,6 +62,9 @@ const YandexMap: React.FC = () => {
           setInvalidMessage(message);
         } else {
           const newCoords = result.geoObjects.get(0).geometry.getCoordinates();
+            // source_time: Date.now(),
+            // address: address,
+            // coords: newCoords,
           setCoords(newCoords);
           setAddressFieldState(true);
         }
@@ -76,13 +78,15 @@ const YandexMap: React.FC = () => {
         const firstGeoObject = res.geoObjects.get(0);
 
         if (!firstGeoObject.getThoroughfare() || !firstGeoObject.getPremiseNumber()) {
-          console.log('говно')
+          setBaseMarkerColor('#ff3333');
+          setAddress('');
         } else {
-          const newAddres = [
+          const newAddress = [
             firstGeoObject.getThoroughfare(),
             firstGeoObject.getPremiseNumber(),
           ].join(", ");
-          setNewAddress(newAddres);
+          setBaseMarkerColor('#e5be01');
+          setAddress(newAddress);
         }
       });
     };
@@ -104,6 +108,13 @@ const YandexMap: React.FC = () => {
       >
         <Placemark
           geometry={coords}
+          options={{
+            preset: "slands#circleDotIcon",
+            iconColor: baseMarkerColor,
+          }}
+        />
+        <Placemark
+          geometry={[56.839439, 53.218803]}
           options={{
             preset: "slands#circleDotIcon",
             iconColor: baseMarkerColor,
