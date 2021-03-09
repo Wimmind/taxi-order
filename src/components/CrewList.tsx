@@ -1,14 +1,31 @@
 import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
+import { useTypedSelector } from "../hooks/useTypedSelector";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import carIcon from "../img/taxi-solid.svg";
 
 const CrewList: React.FC = () => {
+  const { crewsInfo } = useTypedSelector((state) => state.order);
+
   return (
     <ListGroup>
-      <ListGroup.Item>Cras justo odio</ListGroup.Item>
-      <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-      <ListGroup.Item>Morbi leo risus</ListGroup.Item>
-      <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
-      <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
+      {crewsInfo.map((crew) => (
+        <ListGroup.Item key={crew.crew_id} className="bg-warning text-dark">
+          <Row>
+            <Col sm={2}>
+              <img alt="" src={carIcon} />
+            </Col>
+            <Col sm={7}>
+              <Row>
+                {crew.car_mark} {crew.car_model}
+              </Row>
+              <Row>{crew.car_color}</Row>
+            </Col>
+            <Col sm={3}>{crew.distance} м</Col>
+          </Row>
+        </ListGroup.Item>
+      ))}
     </ListGroup>
   );
 };

@@ -1,8 +1,10 @@
-import {combineReducers} from "redux";
-import {addressReducer} from "./addressReducer";
+import { combineReducers } from "redux";
+import { addressReducer } from "./addressReducer";
+import { orderReducer } from "./orderReducer";
 
 export const rootReducer = combineReducers({
-    address: addressReducer,
-})
+  address: addressReducer,
+  order: orderReducer,
+});
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;

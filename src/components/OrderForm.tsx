@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+
 import { useTypedSelector } from "../hooks/useTypedSelector";
+import { useActions } from "../hooks/useActions";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-import { setNewAddress, setInvalidAddressMessage } from "../store/actions/addressActions";
+import { makeOrder } from "../API";
 
 const OrderForm: React.FC = () => {
   const [addressField, setAddressField] = useState<string>("");
-  const {address, coords, isValidAddress, invalidMessage} = useTypedSelector(state => state.address)   
-
-  const dispatch = useDispatch();
-  const setInvalidMessage = (message: string) => {
-    dispatch(setInvalidAddressMessage(message));
-  };
-  const setAddress = (address: string) => {
-    dispatch(setNewAddress(address));
-  };
+  const { address, coords, isValidAddress, invalidMessage } = useTypedSelector(
+    (state) => state.address
+  );
+  const { crewsInfo } = useTypedSelector((state) => state.order);
+  const { setAddress, setInvalidAddressMessage } = useActions();
 
   useEffect(() => {
     setAddressField(address);
@@ -42,20 +39,20 @@ const OrderForm: React.FC = () => {
   const handleSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
     if (!addressField.length) {
-      setInvalidMessage('Поле обязательно для заполнения)))');
+      setInvalidAddressMessage("Поле обязательно для заполнения)))");
     }
     if (isValidAddress) {
-      // const order = {
-      //   source_time: Date.now(),
-      //   address: address,
-      //   lat: coords[0],
-      //   lon: coords[1],
-      // }
+      makeOrder({
+        source_time: Date.now(),
+        address: address,
+        coords: coords,
+        crew_id: crewsInfo[0].crew_id,
+      });
     }
   };
 
   return (
-    <Form>
+    <Form className={"card-element"}>
       <Form.Row>
         <Form.Label column sm={2}>
           Откуда
@@ -78,7 +75,13 @@ const OrderForm: React.FC = () => {
           )}
         </Col>
         <Col sm={1}>
-          <Button onClick={handleSubmit} type="submit" disabled={isValidAddress ? false : true}>Заказать</Button>
+          <Button
+            onClick={handleSubmit}
+            type="submit"
+            disabled={isValidAddress ? false : true}
+          >
+            Заказать
+          </Button>
         </Col>
       </Form.Row>
     </Form>

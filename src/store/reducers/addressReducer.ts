@@ -1,55 +1,29 @@
-import {
-  AddressActionTypes,
-  AddressAction,
-} from "../actions/addressActions";
-
-export interface AddressState {
-  address: string;
-  isValidAddress: boolean;
-  invalidMessage: string;
-  coords: number[];
-}
+import { AddressState } from "../../types/addressTypes";
+import { AddressActionTypes, AddressAction } from "../../types/addressTypes";
 
 const initialState = {
-  address: "Пушкинская 144",
+  address: "",
   isValidAddress: true,
   invalidMessage: "",
-  coords: [],
+  coords: [56.840039, 53.219403],
 };
 
-export const addressReducer = (state: AddressState = initialState, action: AddressAction) => {
+export const addressReducer = (
+  state: AddressState = initialState,
+  action: AddressAction
+) => {
   switch (action.type) {
     case AddressActionTypes.SET_ADDRESS: {
-      return {
-        address: action.payload,
-        isValidAddress: state.isValidAddress,
-        invalidMessage: state.invalidMessage,
-        coords: state.coords,
-      };
+      return { ...state, address: action.payload };
     }
     case AddressActionTypes.FETCH_ADDRESS_VALID: {
-      return {
-        address: state.address,
-        isValidAddress: action.payload,
-        invalidMessage: state.invalidMessage,
-        coords: state.coords,
-      };
+      return { ...state, isValidAddress: action.payload };
     }
     case AddressActionTypes.SET_INVALID_ADDRESS_MESSAGE: {
-      return {
-        address: state.address,
-        isValidAddress: state.isValidAddress,
-        invalidMessage: action.payload,
-        coords: state.coords,
-      };
+      return { ...state, invalidMessage: action.payload };
     }
     case AddressActionTypes.SET_NEW_COORDS: {
-      return {
-        address: state.address,
-        isValidAddress: state.isValidAddress,
-        invalidMessage: state.invalidMessage,
-        coords: action.payload,
-      };
+      return { ...state, coords: action.payload };
     }
     default:
       return state;
